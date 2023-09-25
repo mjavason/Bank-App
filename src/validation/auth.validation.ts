@@ -18,6 +18,21 @@ class AuthValidation {
       password: z.string().min(5), // Adjust the password requirements as needed
     }),
   };
+
+  // Validation schema for resetting the user's password via email
+  resetPasswordEmail = {
+    params: z.object({
+      email: z.string().email(), // Ensure the email format is valid
+    }),
+  };
+
+  // Validation schema for resetting the user's password with a token
+  resetPasswordToken = {
+    body: z.object({
+      token: z.string().min(1).max(255), // Define token validation rules as needed
+      password: z.string().min(5), // Adjust the password requirements as needed
+    }),
+  };
 }
 
 export const authValidation = new AuthValidation();
