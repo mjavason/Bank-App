@@ -64,9 +64,10 @@ export const LINKS = {
 };
 
 export const DATABASES = {
+  BANK_ACCOUNT: 'bank_account',
+  RESET_TOKEN: 'reset_token',
   USER: 'user',
-  ASSIGNMENT: 'assignment',
-  ASSIGNMENT_SUBMISSION: 'assignment_submission',
-  MATERIAL: 'material',
-  SUBJECT: 'subject',
+  TRANSACTION: 'transaction',
 };
+
+
