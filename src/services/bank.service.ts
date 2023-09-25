@@ -1,5 +1,4 @@
 import Model from '../database/models/bank.model';
-import Interface from '../interfaces/bank.interface';
 
 class BankService {
   async create(body: object) {
