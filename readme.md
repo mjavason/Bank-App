@@ -1,6 +1,6 @@
 # Banking App
 
-A secure and user-friendly financial application for managing your finances, making transactions, and accessing your accounts with ease.
+A simple application for managing finances, making transactions, and accessing your accounts with ease.
 
 ## Table of Contents
 
@@ -15,7 +15,7 @@ A secure and user-friendly financial application for managing your finances, mak
 
 ## Introduction
 
-The Banking App provides a robust financial management solution with features including account management, fund transfers, transaction history, and more. It prioritizes the security of your financial data while ensuring a seamless banking experience. Currently hosted live at [Bank App](https://bank-app-ef40.onrender.com)
+The Banking App is a side project that offers basic financial management features, including account management, fund transfers, and transaction history. It aims to provide a simple and straightforward banking experience while considering data security.Currently hosted live at [Bank App](https://bank-app-ef40.onrender.com)
 
 ## Installation
 
@@ -78,13 +78,15 @@ A successful registration yields a JSON response like this:
   "success": true,
   "status_code": "10000",
   "message": "Registration successful",
-  "data": {
+ "data": {
+    "_id": "5f8a12a3e055b1246890d4ad",
     "firstname": "John",
     "lastname": "Doe",
-    "email": "johndoe@example.com",
-    "createdAt": "2023-09-25T10:30:00.000Z",
-    "updatedAt": "2023-09-25T10:30:00.000Z",
-    "_id": "5d9a54e16665109303a5b320"
+    "email": "john.doe@example.com",
+    "role": "user",
+    "deleted": false,
+    "createdAt": "2023-09-25T11:00:00.000Z",
+    "updatedAt": "2023-09-25T11:00:00.000Z"
   }
 }
 ```
@@ -121,11 +123,12 @@ For detailed information about using the app's API and endpoints, consult the [B
 
 ## Design Choices
 
-The app employs a secure design pattern to safeguard financial data, including encryption techniques and multi-factor authentication.
+The app employs Email-based Password Reset:
 
-### Handling Sensitive Data
-
-Sensitive user data, such as passwords and personal information, is stored securely using industry-standard encryption techniques.
+A link or token is sent to the user's registered email address.
+User clicks on the link/token and is directed to a page where they can set a new password.
+Advantages: Widely used and familiar to users. Doesn't require additional authentication mechanisms.
+Disadvantages: Vulnerable to email account compromise.
 
 ## Contributing
 
@@ -143,8 +146,3 @@ Contributions enhancing security, performance, and user experience are welcome.
 ## Acknowledgments
 
 The project has benefited from the collaboration and support of colleagues, mentors, and friends. Their contributions in coding, design, testing, data management, and advice have been invaluable. Thank you to all who have been a part of this project.
-
-```
-
-This version of the README reduces repetition and maintains clarity while providing essential information about the Banking App.
-```
