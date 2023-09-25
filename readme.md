@@ -15,7 +15,7 @@ A secure and user-friendly financial application for managing your finances, mak
 
 ## Introduction
 
-The Banking App provides a robust financial management solution with features including account management, fund transfers, transaction history, and more. It prioritizes the security of your financial data while ensuring a seamless banking experience.
+The Banking App provides a robust financial management solution with features including account management, fund transfers, transaction history, and more. It prioritizes the security of your financial data while ensuring a seamless banking experience. Currently hosted live at [Bank App](https://bank-app-ef40.onrender.com)
 
 ## Installation
 
@@ -117,7 +117,7 @@ The backend ensures security by validating user identity through token and email
 
 ## Documentation
 
-For detailed information about using the app's API and endpoints, consult the [Banking App Documentation](https://yourdocumentationlink.com).
+For detailed information about using the app's API and endpoints, consult the [Banking App Documentation](https://documenter.getpostman.com/view/29278179/2s9YJXYPzS).
 
 ## Design Choices
 
