@@ -1,10 +1,10 @@
-import mongoose, { Schema, Model } from 'mongoose';
+import mongoose, { Schema, Model, model } from 'mongoose';
 import autopopulate from 'mongoose-autopopulate'; // Import the mongoose-autopopulate plugin
 import { DATABASES } from '../../constants';
 import ITransaction from '../../interfaces/transaction.interface';
 
 // Define the schema
-const transactionSchema = new Schema<ITransaction>(
+const TransactionSchema = new Schema<ITransaction>(
   {
     from_account: {
       type: mongoose.Schema.Types.ObjectId,
@@ -39,12 +39,12 @@ const transactionSchema = new Schema<ITransaction>(
 );
 
 // Apply the autopopulate plugin to the schema
-transactionSchema.plugin(autopopulate);
+TransactionSchema.plugin(autopopulate);
 
 // Define the model
-const TransactionModel: Model<ITransaction> = mongoose.model<ITransaction>(
+const TransactionModel = model<ITransaction>(
   DATABASES.TRANSACTION, // Use the constant for the collection name
-  transactionSchema,
+  TransactionSchema,
 );
 
-export { ITransaction, TransactionModel };
+export default TransactionModel;
