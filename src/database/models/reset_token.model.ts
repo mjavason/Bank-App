@@ -1,5 +1,5 @@
 import IResetToken from '../../interfaces/reset_token.interface';
-import mongoose, { Document, Schema, Model } from 'mongoose';
+import { Schema, model } from 'mongoose';
 import autopopulate from 'mongoose-autopopulate'; // Import the mongoose-autopopulate plugin
 import { DATABASES } from '../../constants';
 
@@ -36,9 +36,6 @@ const resetTokenSchema = new Schema<IResetToken>(
 resetTokenSchema.plugin(autopopulate);
 
 // Define the model
-const ResetTokenModel: Model<IResetToken> = mongoose.model<IResetToken>(
-  DATABASES.RESET_TOKEN,
-  resetTokenSchema,
-);
+const ResetTokenModel = model<IResetToken>(DATABASES.RESET_TOKEN, resetTokenSchema);
 
-export { IResetToken, ResetTokenModel };
+export default ResetTokenModel;

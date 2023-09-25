@@ -1,7 +1,7 @@
-import Model from '../database/models/user.model';
-import Interface from '../interfaces/user.interface';
+import Model from '../database/models/bank.model';
+import Interface from '../interfaces/bank.interface';
 
-class UserService {
+class BankService {
   async create(body: object) {
     return await Model.create(body);
   }
@@ -42,7 +42,7 @@ class UserService {
     ).select('-__v');
   }
 
-  async hardDelete(searchParams: Partial<Interface>) {
+  async hardDelete(searchParams: object) {
     return await Model.findOneAndDelete(searchParams).select('-__v');
   }
 
@@ -55,4 +55,4 @@ class UserService {
   }
 }
 
-export const userService = new UserService();
+export const bankService = new BankService();

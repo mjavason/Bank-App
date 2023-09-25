@@ -1,7 +1,7 @@
-import Model from '../database/models/user.model';
-import Interface from '../interfaces/user.interface';
+import Model from '../database/models/transaction.model';
+import Interface from '../interfaces/transaction.interface';
 
-class UserService {
+class TransactionService {
   async create(body: object) {
     return await Model.create(body);
   }
@@ -28,10 +28,6 @@ class UserService {
     return Model.findOne({ ...searchData, deleted: false }).select('-__v');
   }
 
-  async findOneReturnPassword(searchData: object) {
-    return Model.findOne({ ...searchData, deleted: false }).select('-__v +password');
-  }
-
   async softDelete(searchParams: object) {
     return await Model.findOneAndUpdate(
       { ...searchParams, deleted: false },
@@ -42,7 +38,7 @@ class UserService {
     ).select('-__v');
   }
 
-  async hardDelete(searchParams: Partial<Interface>) {
+  async hardDelete(searchParams: object) {
     return await Model.findOneAndDelete(searchParams).select('-__v');
   }
 
@@ -55,4 +51,4 @@ class UserService {
   }
 }
 
-export const userService = new UserService();
+export const transactionService = new TransactionService();

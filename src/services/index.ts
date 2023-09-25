@@ -3,6 +3,8 @@
 // export = './whatever'
 // export { whatever } from './whatever';
 
-export { demoService } from './demo.service';
-export { userService } from './user.service';
 export * from './api.service';
+export { bankService } from './bank.service';
+export { userService } from './user.service';
+export { resetTokenService } from './reset_token.service';
+export { transactionService } from './transaction.service';
