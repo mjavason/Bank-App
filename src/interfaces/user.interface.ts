@@ -4,8 +4,8 @@ export default interface IUser extends Document {
   _id?: string | Types.ObjectId;
   firstname: string;
   lastname: string;
-  username: string;
+  email: string;
   password: string;
-  role: 'teacher' | 'student' | 'admin';
+  role: 'user' | 'admin';
   deleted?: boolean;
 }

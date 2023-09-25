@@ -6,13 +6,13 @@ const UserSchema = new Schema<IUser>(
   {
     firstname: String,
     lastname: String,
-    username: {
+    email: {
       type: String,
       unique: true,
     },
     role: {
       type: String,
-      enum: ['teacher', 'student', 'admin'],
+      enum: ['user', 'admin'],
     },
     password: {
       type: String,

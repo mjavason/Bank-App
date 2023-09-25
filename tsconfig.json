@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
-    "baseUrl": "./",
-    "paths": {
-      "@/*": ["src/*"]
-    },
+    // "baseUrl": "./",
+    // "paths": {
+    //   "@/*": ["src/*"]
+    // },
     /* Visit https://aka.ms/tsconfig to read more about this file */
 
     /* Projects */
