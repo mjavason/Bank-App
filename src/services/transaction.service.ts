@@ -1,7 +1,7 @@
 import Model from '../database/models/transaction.model';
 import Interface from '../interfaces/transaction.interface';
 
-class TransactionService {
+class Service {
   async create(body: object) {
     return await Model.create(body);
   }
@@ -51,4 +51,4 @@ class TransactionService {
   }
 }
 
-export const transactionService = new TransactionService();
+export const transactionService = new Service();

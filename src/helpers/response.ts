@@ -34,7 +34,6 @@ export function ForbiddenResponse(res: Response, message = MESSAGES.FORBIDDEN): 
   return res
     .send({ success: false, status_code: StatusCode.FAILURE, message })
     .status(ResponseStatus.FORBIDDEN);
-
 }
 
 export function BadRequestResponse(res: Response, message = MESSAGES.BAD_PARAMETERS): Response {
@@ -43,7 +42,11 @@ export function BadRequestResponse(res: Response, message = MESSAGES.BAD_PARAMET
     .status(ResponseStatus.BAD_REQUEST);
 }
 
-export function ForbiddenButWeMoveResponse<T>(res: Response, data: T, message = MESSAGES.BAD_PARAMETERS): Response {
+export function ForbiddenButWeMoveResponse<T>(
+  res: Response,
+  data: T,
+  message = MESSAGES.BAD_PARAMETERS,
+): Response {
   return res
     .json({ success: true, status_code: StatusCode.WE_MOVE, message, data })
     .status(ResponseStatus.FORBIDDEN);
@@ -67,20 +70,38 @@ export function FailureMsgResponse(res: Response, message = MESSAGES.ERROR): Res
     .status(ResponseStatus.SUCCESS);
 }
 
-export function SuccessResponse<T>(res: Response, data: T, message = MESSAGES.SUCCESSFUL): Response {
+export function SuccessResponse<T>(
+  res: Response,
+  data: T,
+  message = MESSAGES.SUCCESSFUL,
+): Response {
   return res
     .json({ success: true, status_code: StatusCode.SUCCESS, message, data })
     .status(ResponseStatus.SUCCESS);
 }
 
-export function AccessTokenErrorResponse(res: Response, message = MESSAGES.ACCESS_TOKEN_ERROR_RESPONSE): Response {
+export function AccessTokenErrorResponse(
+  res: Response,
+  message = MESSAGES.ACCESS_TOKEN_ERROR_RESPONSE,
+): Response {
   return res
     .send({ success: false, status_code: StatusCode.INVALID_ACCESS_TOKEN, message })
     .status(ResponseStatus.UNAUTHORIZED);
 }
 
-export function TokenRefreshResponse(res: Response, message = MESSAGES.FETCHED, accessToken: string, refreshToken: string): Response {
+export function TokenRefreshResponse(
+  res: Response,
+  message = MESSAGES.FETCHED,
+  accessToken: string,
+  refreshToken: string,
+): Response {
   return res
-    .json({ success: true, status_code: StatusCode.SUCCESS, message, access_token: accessToken, refresh_token: refreshToken })
+    .json({
+      success: true,
+      status_code: StatusCode.SUCCESS,
+      message,
+      access_token: accessToken,
+      refresh_token: refreshToken,
+    })
     .status(ResponseStatus.SUCCESS);
 }

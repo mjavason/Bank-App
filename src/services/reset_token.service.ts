@@ -1,6 +1,6 @@
 import Model from '../database/models/reset_token.model';
 
-class ResetTokenService {
+class Service {
   async create(body: object) {
     return await Model.create(body);
   }
@@ -50,4 +50,4 @@ class ResetTokenService {
   }
 }
 
-export const resetTokenService = new ResetTokenService();
+export const resetTokenService = new Service();

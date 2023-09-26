@@ -1,7 +1,6 @@
 import Model from '../database/models/bank.model';
-import Interface from '../interfaces/bank.interface';
 
-class BankService {
+class Service {
   async create(body: object) {
     return await Model.create(body);
   }
@@ -55,4 +54,4 @@ class BankService {
   }
 }
 
-export const bankService = new BankService();
+export const bankService = new Service();

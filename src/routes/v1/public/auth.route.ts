@@ -1,8 +1,4 @@
 import { Router } from 'express';
-const crypto = require('crypto');
-const nodemailer = require('nodemailer');
-const ResetToken = require('../models/reset_token.model');
-const UserModel = require('../models/user');
 const router = Router();
 import {
   processRequestBody,

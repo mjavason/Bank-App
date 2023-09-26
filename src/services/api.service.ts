@@ -9,7 +9,12 @@ class ApiService {
     });
   }
 
-  private async request<T>(method: string, url: string, data: any = null, config: AxiosRequestConfig = {}): Promise<T> {
+  private async request<T>(
+    method: string,
+    url: string,
+    data: any = null,
+    config: AxiosRequestConfig = {},
+  ): Promise<T> {
     try {
       const response: AxiosResponse<T> = await this.api.request({
         method,

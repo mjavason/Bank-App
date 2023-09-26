@@ -1,5 +1,9 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
+const crypto = require('crypto');
+const nodemailer = require('nodemailer');
+// const ResetToken = require('../models/reset_token.model');
+// const UserModel = require('../models/user');
 import {
   AuthFailureResponse,
   NotFoundResponse,
@@ -12,19 +16,24 @@ import {
   AccessTokenErrorResponse,
   TokenRefreshResponse,
 } from '../helpers/response';
-import { userService } from '../services';
+import { mailService, resetTokenService, userService } from '../services';
 import logger from '../helpers/logger';
 import { signJwt } from '../utils/jwt';
 import { ACCESS_TOKEN_SECRET, MESSAGES, REFRESH_TOKEN_SECRET } from '../constants';
+import { mailController } from '../controllers';
 
-class UserController {
+class Controller {
+  async hashPassword(password: string) {
+    const saltRounds = 10; // You can adjust the number of rounds for security
+    return await bcrypt.hash(password, saltRounds);
+  }
+
   async register(req: Request, res: Response) {
     let existing_user = await userService.checkForDuplicate(req.body.username);
 
     //Hash password
     try {
-      const saltRounds = 10; // You can adjust the number of rounds for security
-      const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
+      const hashedPassword = await this.hashPassword(req.body.password);
       req.body.password = hashedPassword;
     } catch (error) {
       logger.error('Password hash failed');
@@ -71,85 +80,58 @@ class UserController {
   }
 
   async resetPasswordMail(req: Request, res: Response) {
-    // // try {
-    //   const { email } = req.body;
+    const { email } = req.body;
 
-    //   // Find the user by email
-    //   const user = await userService.find({ email });
+    // Find the user by email
+    const user = await userService.findOne({ email });
 
-    //   if (!user) {
-    //     return res.status(404).json({ message: 'User not found' });
-    //   }
+    if (!user) return NotFoundResponse(res, 'User not found');
 
-    //   // Generate a unique reset token
-    //   const token = crypto.randomBytes(32).toString('hex');
+    // Generate a unique reset token
+    const token = crypto.randomBytes(32).toString('hex');
 
-    //   // Set the expiration date to 1 hour from now
-    //   const expiresAt = new Date();
-    //   expiresAt.setHours(expiresAt.getHours() + 1);
+    // Set the expiration date to 1 hour from now
+    const expiresAt = new Date();
+    expiresAt.setHours(expiresAt.getHours() + 1);
 
-    //   // Save the reset token to the database
-    //   const resetToken = new ResetToken({ user: user._id, token, expiresAt });
-    //   await resetToken.save();
+    // Save the reset token to the database
+    const resetToken = await resetTokenService.create({ user: user._id, token, expiresAt });
 
-    //   // Send the reset email
-    //   const transporter = nodemailer.createTransport({
-    //     // Configure your email provider here (e.g., Gmail, SMTP)
-    //   });
+    // Send the password reset email
+    let mailSent = await mailController.sendPasswordResetEmail(email, token);
 
-    //   const resetLink = `https://yourwebsite.com/reset-password/${token}`;
+    if (!mailSent) return InternalErrorResponse(res, 'Error sending password reset email');
 
-    //   const mailOptions = {
-    //     from: 'your@email.com',
-    //     to: email,
-    //     subject: 'Password Reset Request',
-    //     text: `Click the following link to reset your password: ${resetLink}`,
-    //   };
-
-    //   await transporter.sendMail(mailOptions);
-
-    //   res.status(200).json({ message: 'Password reset email sent' });
-    // // } catch (error) {
-    // //   console.error(error);
-    // //   res.status(500).json({ message: 'Server error' });
-    // // }
-
-    return SuccessMsgResponse(res);
+    return SuccessMsgResponse(res, 'Password reset email sent successfully');
   }
 
-  async resetPassword(req: Request, res: Response){
-    // try {
-    //   const { token } = req.params;
-    //   const { newPassword } = req.body;
-  
-    //   // Find the reset token in the database
-    //   const resetToken = await ResetToken.findOne({ token });
-  
-    //   if (!resetToken || resetToken.expiresAt < new Date()) {
-    //     return res.status(400).json({ message: 'Invalid or expired token' });
-    //   }
-  
-    //   // Find the associated user and update their password
-    //   const user = await User.findById(resetToken.user);
-  
-    //   if (!user) {
-    //     return res.status(404).json({ message: 'User not found' });
-    //   }
-  
-    //   user.password = newPassword;
-    //   await user.save();
-  
-    //   // Delete the used reset token
-    //   await resetToken.remove();
-  
-    //   res.status(200).json({ message: 'Password reset successful' });
-    // } catch (error) {
-    //   console.error(error);
-    //   res.status(500).json({ message: 'Server error' });
-    // }
+  async resetPassword(req: Request, res: Response) {
+    const { token } = req.params;
+    const { newPassword } = req.body;
 
-    return SuccessMsgResponse(res);
+    // Find the reset token in the database
+    const resetToken = await resetTokenService.findOne({ token });
+
+    if (!resetToken || resetToken.expiresAt < new Date())
+      return ForbiddenResponse(res, 'Invalid or expired token');
+
+    // Find the associated user and update their password
+    const user = await userService.findOne({ user: resetToken.user });
+
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    let hashedPassword = await this.hashPassword(newPassword);
+    let updatedUser = await userService.update({ _id: user._id }, { password: hashedPassword });
+
+    if (!updatedUser) return InternalErrorResponse(res, 'Unable to update password');
+
+    // Delete the used reset token
+    let usedToken = await resetTokenService.softDelete({ _id: resetToken._id });
+
+    if (!usedToken) return InternalErrorResponse(res, 'Unable to delete token');
+
+    return SuccessMsgResponse(res, 'Password reset successful');
   }
 }
 
-export const userController = new UserController();
+export const userController = new Controller();
