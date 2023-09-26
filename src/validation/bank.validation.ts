@@ -1,18 +1,9 @@
 import { z } from 'zod';
 
-class BankValidation {
-  // Validation schema for creating a bank account
-  create = {
-    body: z.object({
-      account_number: z.string().min(1).max(255),
-      account_holder: z.string().min(1).max(255),
-    }),
-  };
-
+class Validation {
   // Validation schema for funding a bank account
   fund = {
     body: z.object({
-      account_number: z.string().min(1).max(255),
       amount: z.number().positive(),
     }),
   };
@@ -20,7 +11,7 @@ class BankValidation {
   // Validation schema for transferring funds
   transfer = {
     body: z.object({
-      from_account: z.string().min(1).max(255),
+      // bank_name: z.enum(BANKS_ARRAY),
       to_account: z.string().min(1).max(255),
       amount: z.number().positive(),
     }),
@@ -34,4 +25,4 @@ class BankValidation {
   };
 }
 
-export const bankValidation = new BankValidation();
+export const bankValidation = new Validation();

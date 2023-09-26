@@ -13,7 +13,7 @@ const transporter = nodeMailer.createTransport({
   },
 });
 
-class MailService {
+class Service {
   sendMail = async (
     recipientEmail: string,
     recipientFirstName: string,
@@ -31,4 +31,4 @@ class MailService {
   };
 }
 
-export const mailService = new MailService();
+export const mailService = new Service();

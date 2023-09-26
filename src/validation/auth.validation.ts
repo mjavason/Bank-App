@@ -1,5 +1,5 @@
 import { z } from 'zod';
-class AuthValidation {
+class Validation {
   // Validation schema for user registration
   register = {
     body: z.object({
@@ -35,4 +35,4 @@ class AuthValidation {
   };
 }
 
-export const authValidation = new AuthValidation();
+export const authValidation = new Validation();

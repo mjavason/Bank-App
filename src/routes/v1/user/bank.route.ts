@@ -13,13 +13,13 @@ import { MESSAGES } from '../../../constants';
 // router.get('/', (req: Request, res: Response) => SuccessMsgResponse(res, MESSAGES.DEFAULT));
 
 //create account (one only)
-router.post('/', processRequestBody(bankValidation.create.body), bankController.create);
+router.post('/',  bankController.create);
 
 // fund bank account
 router.post('/fund', processRequestBody(bankValidation.fund.body), bankController.fund);
 
 //transfer funds to another bank account
-router.post('/transfer', processRequestBody(bankValidation.transfer.body), bankController.getAll);
+router.post('/transfer', processRequestBody(bankValidation.transfer.body), bankController.transfer);
 
 //get bank details for logged in user
 router.get('/', bankController.getBankDetails);

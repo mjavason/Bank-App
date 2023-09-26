@@ -1,11 +1,10 @@
 import { Request, Response } from 'express';
 import { mailService, userService } from '../services';
 import { SITE_LINK } from '../constants';
-import { ForbiddenResponse } from '../helpers/response';
 const fs = require('fs');
 const handlebars = require('handlebars');
 
-class MailController {
+class Controller {
   async sendWelcomeMail(req: Request, res: Response) {
     // Load the email template
     const templatePath = './email-templates/welcome-email.html';
@@ -74,4 +73,4 @@ class MailController {
   }
 }
 
-export const mailController = new MailController();
+export const mailController = new Controller();

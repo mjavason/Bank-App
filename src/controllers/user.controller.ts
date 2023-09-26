@@ -22,7 +22,7 @@ import { signJwt } from '../utils/jwt';
 import { ACCESS_TOKEN_SECRET, MESSAGES, REFRESH_TOKEN_SECRET } from '../constants';
 import { mailController } from '../controllers';
 
-class UserController {
+class Controller {
   async hashPassword(password: string) {
     const saltRounds = 10; // You can adjust the number of rounds for security
     return await bcrypt.hash(password, saltRounds);
@@ -134,4 +134,4 @@ class UserController {
   }
 }
 
-export const userController = new UserController();
+export const userController = new Controller();
