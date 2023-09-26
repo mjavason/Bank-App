@@ -10,6 +10,20 @@ import {
 } from '../helpers/response';
 import { MESSAGES } from '../constants';
 
+async function generateUniqueBankAccountNumber() {
+  while (true) {
+    const min = 1000000000; // Minimum 10-digit number
+    const max = 9999999999; // Maximum 10-digit number
+
+    const accountNumber = Math.floor(Math.random() * (max - min + 1)) + min;
+    const accountNumberStr = accountNumber.toString();
+
+    const existingAccount = await bankService.findOne({ account_number: accountNumberStr });
+
+    if (!existingAccount) return accountNumberStr;
+  }
+}
+
 class Controller {
   async create(req: Request, res: Response) {
     const userId = res.locals.user._id;
@@ -18,7 +32,7 @@ class Controller {
 
     if (userBankDetails) return ForbiddenResponse(res, 'Bank account already exists');
 
-    req.body.account_number = await this.generateUniqueBankAccountNumber();
+    req.body.account_number = await generateUniqueBankAccountNumber();
     req.body.account_holder = userId;
 
     const data = await bankService.create(req.body);
@@ -103,12 +117,12 @@ class Controller {
     if (userBankDetails.balance < amountToTransfer)
       return ForbiddenResponse(res, 'Insufficient funds');
 
-    const updatedUserBankDetails = bankService.update(
+    const updatedUserBankDetails = await bankService.update(
       { _id: userBankDetails._id },
       { balance: userBankDetails.balance - amountToTransfer },
     );
 
-    const updatedRecipientBankDetails = bankService.update(
+    const updatedRecipientBankDetails = await bankService.update(
       { _id: userBankDetails._id },
       { balance: userBankDetails.balance - amountToTransfer },
     );
@@ -129,7 +143,7 @@ class Controller {
 
     if (!userBankDetails) return NotFoundResponse(res, 'You dont have a bank account');
 
-    const updatedUserBankDetails = bankService.update(
+    const updatedUserBankDetails = await bankService.update(
       { _id: userBankDetails._id },
       { balance: userBankDetails.balance + amount },
     );
@@ -140,19 +154,7 @@ class Controller {
     return SuccessResponse(res, updatedUserBankDetails);
   }
 
-  async generateUniqueBankAccountNumber() {
-    while (true) {
-      const min = 1000000000; // Minimum 10-digit number
-      const max = 9999999999; // Maximum 10-digit number
 
-      const accountNumber = Math.floor(Math.random() * (max - min + 1)) + min;
-      const accountNumberStr = accountNumber.toString();
-
-      const existingAccount = await bankService.findOne({ account_number: accountNumberStr });
-
-      if (!existingAccount) return accountNumberStr;
-    }
-  }
 }
 
 export const bankController = new Controller();

@@ -23,7 +23,7 @@ class Controller {
     const data = await transactionService.getAll(pagination);
 
     if (!data) return InternalErrorResponse(res);
-    if (data.length === 0) return NotFoundResponse(res);
+    if (data.length === 0) return NotFoundResponse(res, 'No transactions found');
 
     return SuccessResponse(res, data);
   }
