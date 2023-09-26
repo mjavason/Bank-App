@@ -16,19 +16,24 @@ import {
   AccessTokenErrorResponse,
   TokenRefreshResponse,
 } from '../helpers/response';
-import { resetTokenService, userService } from '../services';
+import { mailService, resetTokenService, userService } from '../services';
 import logger from '../helpers/logger';
 import { signJwt } from '../utils/jwt';
 import { ACCESS_TOKEN_SECRET, MESSAGES, REFRESH_TOKEN_SECRET } from '../constants';
+import { mailController } from '../controllers';
 
 class UserController {
+  async hashPassword(password: string) {
+    const saltRounds = 10; // You can adjust the number of rounds for security
+    return await bcrypt.hash(password, saltRounds);
+  }
+
   async register(req: Request, res: Response) {
     let existing_user = await userService.checkForDuplicate(req.body.username);
 
     //Hash password
     try {
-      const saltRounds = 10; // You can adjust the number of rounds for security
-      const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
+      const hashedPassword = await this.hashPassword(req.body.password);
       req.body.password = hashedPassword;
     } catch (error) {
       logger.error('Password hash failed');
@@ -75,7 +80,6 @@ class UserController {
   }
 
   async resetPasswordMail(req: Request, res: Response) {
-    // try {
     const { email } = req.body;
 
     // Find the user by email
@@ -93,61 +97,40 @@ class UserController {
     // Save the reset token to the database
     const resetToken = await resetTokenService.create({ user: user._id, token, expiresAt });
 
-    try {
-      // Send the password reset email
-      await mailService.sendPasswordResetEmail(email, token);
+    // Send the password reset email
+    let mailSent = await mailController.sendPasswordResetEmail(email, token);
 
-      // Respond with a success message
-    } catch (error) {
-      console.error('Error sending password reset email:', error);
-      return res.status(500).json({ message: 'Error sending password reset email' });
-    }
+    if (!mailSent) return InternalErrorResponse(res, 'Error sending password reset email');
 
-    return res.status(200).json({ message: 'Password reset email sent successfully' });
-    res.status(200).json({ message: 'Password reset email sent' });
-    // } catch (error) {
-    //   console.error(error);
-    //   res.status(500).json({ message: 'Server error' });
-    // }
-
-    return SuccessMsgResponse(res);
+    return SuccessMsgResponse(res, 'Password reset email sent successfully');
   }
 
-  // Example usage in your controller
-  resetPasswordEmail = async (req: Request, res: Response) => {};
-
   async resetPassword(req: Request, res: Response) {
-    // try {
-    //   const { token } = req.params;
-    //   const { newPassword } = req.body;
+    const { token } = req.params;
+    const { newPassword } = req.body;
 
-    //   // Find the reset token in the database
-    //   const resetToken = await ResetToken.findOne({ token });
+    // Find the reset token in the database
+    const resetToken = await resetTokenService.findOne({ token });
 
-    //   if (!resetToken || resetToken.expiresAt < new Date()) {
-    //     return res.status(400).json({ message: 'Invalid or expired token' });
-    //   }
+    if (!resetToken || resetToken.expiresAt < new Date())
+      return ForbiddenResponse(res, 'Invalid or expired token');
 
-    //   // Find the associated user and update their password
-    //   const user = await User.findById(resetToken.user);
+    // Find the associated user and update their password
+    const user = await userService.findOne({ user: resetToken.user });
 
-    //   if (!user) {
-    //     return res.status(404).json({ message: 'User not found' });
-    //   }
+    if (!user) return res.status(404).json({ message: 'User not found' });
 
-    //   user.password = newPassword;
-    //   await user.save();
+    let hashedPassword = await this.hashPassword(newPassword);
+    let updatedUser = await userService.update({ _id: user._id }, { password: hashedPassword });
 
-    //   // Delete the used reset token
-    //   await resetToken.remove();
+    if (!updatedUser) return InternalErrorResponse(res, 'Unable to update password');
 
-    //   res.status(200).json({ message: 'Password reset successful' });
-    // } catch (error) {
-    //   console.error(error);
-    //   res.status(500).json({ message: 'Server error' });
-    // }
+    // Delete the used reset token
+    let usedToken = await resetTokenService.softDelete({ _id: resetToken._id });
 
-    return SuccessMsgResponse(res);
+    if (!usedToken) return InternalErrorResponse(res, 'Unable to delete token');
+
+    return SuccessMsgResponse(res, 'Password reset successful');
   }
 }
 

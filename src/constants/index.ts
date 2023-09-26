@@ -3,11 +3,15 @@ dotenv.config({ path: './.env' });
 // export const CORS_ORIGIN = process.env.CORS_ORIGIN || 'http://localhost:3000';
 export const CORS_ORIGIN = process.env.CORS_ORIGIN || '*';
 export const DB_NAME = process.env.MONGO_DB_NAME || 'bank-app';
-export const DB_CONNECTION_STRING = process.env.MONGO_DB_URL + DB_NAME || 'mongodb://localhost:27017/' + DB_NAME;
+export const DB_CONNECTION_STRING =
+  process.env.MONGO_DB_URL + DB_NAME || 'mongodb://localhost:27017/' + DB_NAME;
 export const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET || 'access-token-secret';
 export const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET || 'refresh-token-secret';
 export const JWT_SECRET = process.env.JWT_SECRET || 'jwt-secret';
 export const APP_NAME = process.env.APP_NAME || 'app';
+export const SITE_LINK = process.env.SITE_LINK || 'http://localhost:5000';
+export const MAIL_ADDRESS = process.env.MAIL_ADDRESS || 'michaelorji@mail.com';
+export const MAIL_PASSWORD = process.env.MAIL_PASSWORD || 'xxxx';
 
 export const STATUS_CODES = {
   SUCCESS: '10000',
@@ -53,9 +57,9 @@ export const MESSAGES = {
 };
 
 export const LINKS = {
-  API_DOCUMENTATION:'https://documenter.getpostman.com/view/29278179/2s9YJW55kR',
-  EMAIL: 'mailto:admin@crafthire.online',
-  GOOGLE_MEET: 'https://meet.google.com/uoq-khoy-tpu',
+  API_DOCUMENTATION: 'https://documenter.getpostman.com/view/29278179/2s9YJXYPzS',
+  EMAIL: 'mailto:app@mail.online',
+  GOOGLE_MEET: 'https://meet.google.com',
   PHONE_CALL: 'tel:+2349999999999',
   SMS: 'sms:+2349999999999',
   WHATSAPP_CALL: 'https://wa.me/2349999999999',
@@ -69,5 +73,3 @@ export const DATABASES = {
   USER: 'user',
   TRANSACTION: 'transaction',
 };
-
-
