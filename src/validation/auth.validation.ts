@@ -1,12 +1,13 @@
 import { z } from 'zod';
+
 class Validation {
   // Validation schema for user registration
   register = {
     body: z.object({
       firstname: z.string().min(1).max(255),
       lastname: z.string().min(1).max(255),
-      username: z.string().min(1).max(255),
-      role: z.enum(['teacher', 'student', 'admin']),
+      email: z.string().min(1).max(255).email(), // Check for a valid email address
+      role: z.enum(['user', 'admin']),
       password: z.string().min(5), // Adjust the password requirements as needed
     }),
   };
@@ -14,7 +15,7 @@ class Validation {
   // Validation schema for user login
   login = {
     body: z.object({
-      username: z.string().min(1).max(255),
+      email: z.string().min(1).max(255).email(), // Check for a valid email address
       password: z.string().min(5), // Adjust the password requirements as needed
     }),
   };
