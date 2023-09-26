@@ -3,5 +3,8 @@
 // export = './whatever'
 // export { whatever } from './whatever';
 
-export { demoController } from './demo.controller';
-export { userController } from './user.controller';;
+export { userController } from './user.controller';
+export { mailController } from './mail.controller';
+export { bankController } from './bank.controller';
+export { transactionController } from './transaction.controller';
+export { resetTokenController } from './reset_token.controller';

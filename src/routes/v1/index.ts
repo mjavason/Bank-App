@@ -5,7 +5,9 @@ import { MESSAGES, STATUS_CODES } from '../../constants';
 
 const router = Router();
 router.get('/', (req, res) => {
-  res.status(200).send({ status_code: STATUS_CODES.SUCCESS, message: MESSAGES.WELCOME_V1, success: false });
+  res
+    .status(200)
+    .send({ status_code: STATUS_CODES.SUCCESS, message: MESSAGES.WELCOME_V1, success: false });
   console.log(MESSAGES.WELCOME_V1);
 });
 

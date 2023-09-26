@@ -1,7 +1,7 @@
 import Model from '../database/models/user.model';
 import Interface from '../interfaces/user.interface';
 
-class UserService {
+class Service {
   async create(body: object) {
     return await Model.create(body);
   }
@@ -55,4 +55,4 @@ class UserService {
   }
 }
 
-export const userService = new UserService();
+export const userService = new Service();
