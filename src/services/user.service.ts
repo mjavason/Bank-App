@@ -45,14 +45,6 @@ class Service {
   async hardDelete(searchParams: Partial<Interface>) {
     return await Model.findOneAndDelete(searchParams).select('-__v');
   }
-
-  async checkForDuplicate(name: string) {
-    // Check for duplicate email
-    const existingEmail = await Model.findOne({ name: name }).select('-__v');
-    if (existingEmail) return existingEmail;
-
-    return false; // No duplicates found
-  }
 }
 
 export const userService = new Service();

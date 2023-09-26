@@ -19,24 +19,27 @@ import {
 import { mailService, resetTokenService, userService } from '../services';
 import logger from '../helpers/logger';
 import { signJwt } from '../utils/jwt';
-import { ACCESS_TOKEN_SECRET, MESSAGES, REFRESH_TOKEN_SECRET } from '../constants';
+import { ACCESS_TOKEN_SECRET, JWT_SECRET, MESSAGES, REFRESH_TOKEN_SECRET } from '../constants';
 import { mailController } from '../controllers';
 
+async function hashPassword(password: string) {
+  const saltRounds = 10; // You can adjust the number of rounds for security
+  return await bcrypt.hash(password, saltRounds);
+}
 class Controller {
-  async hashPassword(password: string) {
-    const saltRounds = 10; // You can adjust the number of rounds for security
-    return await bcrypt.hash(password, saltRounds);
-  }
-
   async register(req: Request, res: Response) {
-    let existing_user = await userService.checkForDuplicate(req.body.username);
+    const cwd = process.cwd();
+    console.log('Current working directory:', cwd);
+
+    let existing_user = await userService.findOne({ email: req.body.email });
 
     //Hash password
     try {
-      const hashedPassword = await this.hashPassword(req.body.password);
+      const hashedPassword = await hashPassword(req.body.password);
       req.body.password = hashedPassword;
     } catch (error) {
       logger.error('Password hash failed');
+      console.log(error);
       return InternalErrorResponse(res);
     }
 
@@ -44,6 +47,18 @@ class Controller {
     const data = await userService.create(req.body);
 
     if (!data) return InternalErrorResponse(res);
+
+    let token = await signJwt({ _id: data._id }, JWT_SECRET, '1h');
+
+    let sendMail = await mailController.sendWelcomeMail(
+      req.body.email,
+      req.body.firstname,
+      req.body.lastname,
+      token,
+    );
+
+    if (!sendMail)
+      return SuccessResponse(res, data, 'User registered successfully. Welcome mail failed');
 
     return SuccessResponse(res, data);
   }
@@ -120,7 +135,7 @@ class Controller {
 
     if (!user) return res.status(404).json({ message: 'User not found' });
 
-    let hashedPassword = await this.hashPassword(newPassword);
+    let hashedPassword = await hashPassword(newPassword);
     let updatedUser = await userService.update({ _id: user._id }, { password: hashedPassword });
 
     if (!updatedUser) return InternalErrorResponse(res, 'Unable to update password');
