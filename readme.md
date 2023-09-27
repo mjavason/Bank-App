@@ -15,7 +15,7 @@ A simple application for managing finances, making transactions, and accessing y
 
 ## Introduction
 
-The Banking App is a side project that offers basic financial management features, including account management, fund transfers, and transaction history. It aims to provide a simple and straightforward banking experience while considering data security.Currently hosted live at [Bank App](https://bank-app-ef40.onrender.com)
+The Banking App is a side project that offers basic financial management features, including account management, fund transfers, and transaction history. It aims to provide a simple and straightforward banking experience while considering data security. Currently hosted live at [Bank App](https://bank-app-ef40.onrender.com)
 
 ## Installation
 
